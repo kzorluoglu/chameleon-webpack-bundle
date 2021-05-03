@@ -38,10 +38,10 @@
         "phpunit/phpunit": "^9.5"
     },
     "scripts": {
-        "post-install-cmd": [
-            "php -r \"copy('vendor/kzorluoglu/chameleon-webpack/webpack.config.js', 'webpack.config.js');\"",
-            "php -r \"copy('vendor/kzorluoglu/chameleon-webpack/webpack.development.config.js', 'webpack.development.config.js');\"",
-            "php -r \"copy('vendor/kzorluoglu/chameleon-webpack/package.json', 'package.json');\""
+        "post-root-package-install": [
+            "@php -r \"file_exists('vendor/kzorluoglu/chameleon-webpack/webpack.config.js') || copy('vendor/kzorluoglu/chameleon-webpack/webpack.config.js', 'webpack.config.js');\"",
+            "@php -r \"file_exists('vendor/kzorluoglu/chameleon-webpack/webpack.development.config.js') || copy('vendor/kzorluoglu/chameleon-webpack/webpack.development.config.js', 'webpack.development.config.js');\"",
+            "@php -r \"file_exists('vendor/kzorluoglu/chameleon-webpack/package.json') || copy('vendor/kzorluoglu/chameleon-webpack/package.json', 'package.json');\"",
         ]
     }
 }
