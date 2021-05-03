@@ -1,0 +1,47 @@
+{
+    "name": "kzorluoglu/chameleon-webpack-bundle",
+    "type": "symfony-bundle",
+    "description": "A Symfony bundle for Chameleon System",
+    "keywords": [
+        "webpack",
+        "bundle",
+        "Symfony"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Koray Zorluoglu",
+            "email": "koray.zorluoglu@esono.de",
+            "homepage": "https://www.esono.de",
+            "role": "Developer"
+        }
+    ],
+    "extra": {
+        "name": "Webpack Bundle",
+        "dev_info_installation": "",
+        "dev_info_usage": "",
+        "pricegroup": 0,
+        "public": false,
+        "screenshotfolder_id": ""
+    },
+    "autoload": {
+        "psr-4": {
+            "kzorluoglu\\ChameleonWebpackBundle\\": [""]
+        }
+    },
+    "require": {
+        "php": "^7.4",
+        "chameleon-system/chameleon-base": "^7.1.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"copy('vendor/kzorluoglu/chameleon-webpack/webpack.config.js', 'webpack.config.js');\"",
+            "php -r \"copy('vendor/kzorluoglu/chameleon-webpack/webpack.development.config.js', 'webpack.development.config.js');\"",
+            "php -r \"copy('vendor/kzorluoglu/chameleon-webpack/package.json', 'package.json');\""
+        ]
+    }
+}

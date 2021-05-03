@@ -1,0 +1,22 @@
+{
+  "name": "workdir",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">     <a href=\"https://chameleonsystem.com\" target=\"_blank\">         <img src=\"https://demo.chameleon-system.de/chameleon/mediapool/8/ae/chameleon-logo_id3834.png\">     </a>     <br />     <span>         The E-Business Platform     </span> </p>",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "css-loader": "^5.2.1",
+    "html-loader": "^2.1.2",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.31.0",
+    "webpack-cli": "^4.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack --mode=production",
+    "webpack:dev": "webpack --mode=development --config=webpack.development.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
