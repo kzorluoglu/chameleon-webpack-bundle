@@ -23,28 +23,30 @@ class AssetCreator implements AssetCreatorInterface
     public function getAssets(): array
     {
         $sourceAbsolutePath = $this->getAbsolutePath();
-        $assetFiles[] = new AssetFile('package.json', $sourceAbsolutePath, $this->rootDir);
-        $assetFiles[] = new AssetFile('webpack.config.js', $sourceAbsolutePath, $this->rootDir);
-        $assetFiles[] = new AssetFile('webpack.development.config.js', $sourceAbsolutePath, $this->rootDir);
+        $targetAbsolutePath = $this->rootDir."/..";
+        $assetFiles[] = new AssetFile('package.json', $sourceAbsolutePath, $targetAbsolutePath);
+        $assetFiles[] = new AssetFile('webpack.config.js', $sourceAbsolutePath, $targetAbsolutePath);
+        $assetFiles[] = new AssetFile('webpack.development.config.js', $sourceAbsolutePath, $targetAbsolutePath);
         return $assetFiles;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function copy(AssetFile $assetFile): string
+    public function copy(AssetFile $assetFile): bool
     {
+        $sourceFile = $assetFile->getSourceAbsolutePath().'/'.$assetFile->getFileName();
+        $targetFile = $assetFile->getTargetAbsolutePath().'/'.$assetFile->getFileName();
+
         try {
-            $sourceFile = $assetFile->getSourceAbsolutePath().'/'.$assetFile->getFileName();
-            $targetFile = $assetFile->getTargetAbsolutePath().'/'.$assetFile->getFileName();
-            copy($sourceFile, $targetFile);
+            return copy($sourceFile, $targetFile);
         } catch (Exception $e) {
-            return $e->getMessage();
+            throw new Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
 
     private function getAbsolutePath(): string
     {
-        return $this->rootDir.'/../vendor/kzorluoglu';
+        return $this->rootDir.'/../vendor/kzorluoglu/chameleon-webpack-bundle';
     }
 }

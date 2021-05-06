@@ -3,6 +3,7 @@
 namespace kzorluoglu\ChameleonWebpackBundle\Interfaces;
 
 use kzorluoglu\ChameleonWebpackBundle\DataModel\AssetFile;
+use Exception;
 
 interface AssetCreatorInterface
 {
@@ -11,5 +12,10 @@ interface AssetCreatorInterface
      */
     public function getAssets(): array;
 
-    public function copy(AssetFile $assetFile): string;
+    /**
+     * @param AssetFile $assetFile
+     * @return string
+     * @throws Exception
+     */
+    public function copy(AssetFile $assetFile): bool;
 }
