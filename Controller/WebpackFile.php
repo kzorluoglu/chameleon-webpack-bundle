@@ -3,6 +3,7 @@
 namespace kzorluoglu\ChameleonWebpackBundle\Controller;
 
 use Exception;
+use kzorluoglu\ChameleonWebpackBundle\DataModel\JsFile;
 use kzorluoglu\ChameleonWebpackBundle\Interfaces\WebpackFileInterface;
 
 class WebpackFile implements WebpackFileInterface
@@ -15,6 +16,9 @@ class WebpackFile implements WebpackFileInterface
         $this->rootDir = $rootDir;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getJsFile(string $entryName): string
     {
        return $this->generateScriptTagForEntry($entryName);
@@ -25,14 +29,19 @@ class WebpackFile implements WebpackFileInterface
         // TODO: Implement getCssFiles() method.
     }
 
-    private function getCompiledJsFile($entryName): ?array
+    /**
+     * @param string $entryName
+     * @return JsFile[]|null
+     */
+    private function getCompiledJsFile(string $entryName): ?array
     {
         $jsFiles = [];
         foreach(glob($this->rootDir.'/../web/build/'.$entryName.'*.js') as $jsFile) {
-            $jsFiles[] = $jsFile;
+            $fileInfo = pathinfo($jsFile);
+            $jsFiles[] = new JsFile($fileInfo['dirname'], $fileInfo['basename'], $fileInfo['extension'], $fileInfo['filename']);
         }
 
-        if (0 === \count($jsFile)) {
+        if (0 === \count($jsFiles)) {
             return null;
         }
 
@@ -44,10 +53,34 @@ class WebpackFile implements WebpackFileInterface
      */
     private function generateScriptTagForEntry(string $entryName): string
     {
-        if(null === ($jsFile = $this->getCompiledJsFile($entryName))){
+        if(null === ($jsFiles = $this->getCompiledJsFile($entryName))){
             throw new Exception(sprintf('We can\'t find any js file for Entry :%s', $entryName));
         }
 
-        return sprintf('<script type="text/javascript" src="build/%s"></script>', $jsFile);
+        if (true === is_array($jsFiles)) {
+                return $this->getMultipleScripts($jsFiles);
+        }
+
+        return $this->getScript($jsFiles[0]);
+    }
+
+    private function getScript(JsFile $jsFile): string
+    {
+        return sprintf('<script type="text/javascript" src="build/%s"></script>', $jsFile->getBasename());
+    }
+
+    /**
+     * @param JsFile[] $jsFiles
+     * @return string
+     */
+    private function getMultipleScripts(array $jsFiles): string
+    {
+        $scripts = '';
+        foreach ($jsFiles as $file)
+        {
+            $scripts .= $this->getScript($file)." \n";
+        }
+
+        return $scripts;
     }
 }

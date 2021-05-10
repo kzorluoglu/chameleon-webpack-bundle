@@ -3,10 +3,10 @@
 namespace kzorluoglu\ChameleonWebpackBundle\Twig;
 
 use kzorluoglu\ChameleonWebpackBundle\Interfaces\WebpackFileInterface;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class EntryFilesTwigExtension extends TwigExtension
+class EntryFilesTwigExtension extends AbstractExtension
 {
     private WebpackFileInterface $webpackFile;
 
@@ -15,14 +15,13 @@ class EntryFilesTwigExtension extends TwigExtension
         $this->webpackFile = $webpackFile;
     }
 
-    public function getFunctions(): array
+    public function getFunctions()
     {
         return [
-            new TwigFunction('webpack_entry_js_files', [$this, 'getWebpackEntryJsFiles']),
-            new TwigFunction('webpack_entry_css_files', [$this, 'getWebpackEntryCssFiles']),
+            new TwigFunction('webpack_entry_js_files', [$this, 'getWebpackEntryJsFiles'], ['is_safe' => ['html']]),
+            new TwigFunction('webpack_entry_css_files', [$this, 'getWebpackEntryCssFiles'], ['is_safe' => ['html']]),
         ];
     }
-
     public function getWebpackEntryJsFiles(string $entryName): string
     {
         return $this->webpackFile->getJsFile($entryName);

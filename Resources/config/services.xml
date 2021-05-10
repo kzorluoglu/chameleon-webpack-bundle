@@ -23,6 +23,7 @@
         <service id="kzorluoglu_chameleon_webpack.twig.entry_files_twig_extension"
                  class="\kzorluoglu\ChameleonWebpackBundle\Twig\EntryFilesTwigExtension">
             <argument type="service" id="kzorluoglu_chameleon_webpack.controller.webpack_file"/>
+            <tag name="twig.extension"/>
         </service>
 
     </services>
