@@ -33,6 +33,10 @@ npm run webpack
 ```
 npm run webpack:dev 
 ```
+* hot-reload/watch
+```
+npm run webpack:dev:watch
+```
 
 
 ## Configs
