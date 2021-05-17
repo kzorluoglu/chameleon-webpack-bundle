@@ -1,11 +1,10 @@
 # Webpack Bundle for Chameleon Shop (WIP)
 
 ## installation
-First, install Node.js and also the Yarn or npm Package Manager (yarn is recommended.)
+* First, install Node.js and also the Yarn or npm Package Manager (yarn is recommended.)
 * Install the Bundle via Composer in Chameleon Shop Application
 ```
  composer.sh require kzorluoglu/chameleon-webpack-bundle:dev-master
- yarn install // or npm install
 ```
 
 * Add the Bundle in app/AppKernel.php
@@ -13,6 +12,15 @@ First, install Node.js and also the Yarn or npm Package Manager (yarn is recomme
 new \kzorluoglu\ChameleonWebpackBundle\kzorluogluChameleonWebpackBundle(),
 ```
 
+* Create the Webpack Assets for Project
+```
+app/console chameleon_system:webpack:create-assets
+```
+
+* Install NPM Packages
+```
+ yarn install // or npm install
+```
 
 ## Usage
 

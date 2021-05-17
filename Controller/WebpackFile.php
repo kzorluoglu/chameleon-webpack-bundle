@@ -3,6 +3,7 @@
 namespace kzorluoglu\ChameleonWebpackBundle\Controller;
 
 use Exception;
+use kzorluoglu\ChameleonWebpackBundle\DataModel\CssFile;
 use kzorluoglu\ChameleonWebpackBundle\DataModel\JsFile;
 use kzorluoglu\ChameleonWebpackBundle\Interfaces\WebpackFileInterface;
 
@@ -26,14 +27,65 @@ class WebpackFile implements WebpackFileInterface
 
     public function getCssFile(string $entryName)
     {
-        // TODO: Implement getCssFiles() method.
+        return $this->generateCssTagForEntry($entryName);
     }
 
     /**
-     * @param string $entryName
+     * @throws Exception
+     */
+    private function generateScriptTagForEntry(string $entryName): string
+    {
+        if(null === ($jsFiles = $this->getEntryJsFiles($entryName))){
+            throw new Exception(sprintf("We can't find any js file for Entry :%s", $entryName));
+        }
+
+        if (true === is_array($jsFiles)) {
+            return $this->getMultipleScripts($jsFiles);
+        }
+
+        return $this->getScript($jsFiles[0]);
+    }
+
+    private function getScript(JsFile $file): string
+    {
+        return sprintf('<script type="text/javascript" src="build/%s"></script>', $file->getBasename());
+    }
+
+    /**
+     * @param JsFile[] $jsFiles
+     */
+    private function getMultipleScripts(array $jsFiles): string
+    {
+        $scripts = '';
+        foreach ($jsFiles as $file)
+        {
+            $scripts .= $this->getScript($file)." \n";
+        }
+
+        return $scripts;
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    private function generateCssTagForEntry(string $entryName): string
+    {
+        if(null === ($cssFiles = $this->getEntryCssFiles($entryName))){
+            throw new Exception(sprintf("We can't find any css file for Entry :%s", $entryName));
+        }
+
+        if (true === is_array($cssFiles)) {
+            return $this->getMultipleCss($cssFiles);
+        }
+
+        return $this->getCssTag($cssFiles[0]);
+    }
+
+    /**
      * @return JsFile[]|null
      */
-    private function getCompiledJsFile(string $entryName): ?array
+    private function getEntryJsFiles(string $entryName): ?array
     {
         $jsFiles = [];
         foreach(glob($this->rootDir.'/../web/build/'.$entryName.'*.js') as $jsFile) {
@@ -49,38 +101,41 @@ class WebpackFile implements WebpackFileInterface
     }
 
     /**
-     * @throws Exception
+     * @return CssFile[]|null
      */
-    private function generateScriptTagForEntry(string $entryName): string
+    private function getEntryCssFiles(string $entryName): ?array
     {
-        if(null === ($jsFiles = $this->getCompiledJsFile($entryName))){
-            throw new Exception(sprintf('We can\'t find any js file for Entry :%s', $entryName));
+        $jsFiles = [];
+        foreach(glob($this->rootDir.'/../web/build/'.$entryName.'*.css') as $jsFile) {
+            $fileInfo = pathinfo($jsFile);
+            $jsFiles[] = new CssFile($fileInfo['dirname'], $fileInfo['basename'], $fileInfo['extension'], $fileInfo['filename']);
         }
 
-        if (true === is_array($jsFiles)) {
-                return $this->getMultipleScripts($jsFiles);
+        if (0 === \count($jsFiles)) {
+            return null;
         }
 
-        return $this->getScript($jsFiles[0]);
-    }
-
-    private function getScript(JsFile $jsFile): string
-    {
-        return sprintf('<script type="text/javascript" src="build/%s"></script>', $jsFile->getBasename());
+        return $jsFiles;
     }
 
     /**
-     * @param JsFile[] $jsFiles
-     * @return string
+     * @param CssFile[] $cssFiles
      */
-    private function getMultipleScripts(array $jsFiles): string
+    private function getMultipleCss(array $cssFiles): string
     {
         $scripts = '';
-        foreach ($jsFiles as $file)
+        foreach ($cssFiles as $file)
         {
-            $scripts .= $this->getScript($file)." \n";
+            $scripts .= $this->getCssTag($file)." \n";
         }
 
         return $scripts;
     }
+
+    private function getCssTag(CssFile $file): string
+    {
+    return sprintf('<link rel="stylesheet" media="all" href="build/%s"></script>', $file->getBasename());
+    }
+
+
 }
